@@ -11,30 +11,21 @@ app.use(express.urlencoded({ extended: true}));
 cancionesRoutes(app);
 
 app.get('/prueba', async(req, res, next) =>{
-    console.log('antes de la promesa');
-    let x =10;
-    const promesa= new Promise((resolve, reject) => {
-        if (x == 10){
-            resolve('promesa resuelta');
-        }else{
-            reject('promesa rechazada')
-        }
-    });
-
-    const response = await promesa.then((res) => {
-        console.log(res);
-    }).catch((error) => {
-        console.log(error);
-    });
-    console.log('despues de la promesa')
-      
-
-    /*console.log(req.headers);
-    console.log(req.params);
-    console.log(req.query);
-    console.log(req.body);*/
-
-    res.status(200).json({nombre: "abril"});
+    const datos = {
+        nombre: 'tatiana',
+        apellido:'albarracin',
+        genero:'femenino'
+    }
+    
+    const nuevosDatos ={
+        ...datos,
+        ciudad: 'Bucaramanga',
+        profesion: 'ing sistemas'
+    }
+    const {apellido, nombre}= datos;
+    const arrayNumeros = [5,1,20,7,10,45,90]
+    const mayor = Math.max(...arrayNumeros);
+    res.status(200).json({mayor});
 
     //res.status(401).send('Prueba del servidor');
 }); //este get es una ruta

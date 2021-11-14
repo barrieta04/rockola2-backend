@@ -11,6 +11,7 @@ const obtenerCanciones = async (req, res) => {
         }
         res.json(data); //esto se ejecuta cuando se ejecute la promesa asincrono sin await y async
     }catch(error){
+        console.log(error);
         res.status(500).send(error);
     } 
     /*executeQuery('SELECT * FROM canciones').then((response) => {
@@ -20,20 +21,71 @@ const obtenerCanciones = async (req, res) => {
     });*/
 }
 
+
+
 const obtenerCancion = (req, res) => {
-     res.send('obtener cancion desde el controlador')
+    const {id} = req.params;
+    executeQuery(`SELECT * FROM canciones WHERE idcanciones = ${id}`).then((response) => {
+        const data = {
+            message: `${response.length} datos encontrados`,
+            datos: response.length > 0 ? response [0]: null
+        }
+        res.json(data);
+    }).catch((error)=> {
+        console.log(error);
+        res.status(500).send(error);
+    });
+     
 }
 
-const agregarCancion = (req, res) => {
-     res.send('agregar cancion desde el controlador')
+
+
+const agregarCancion = async (req, res) => {
+    const {nombre, genero, artista} = req.body;
+    try{
+        const response = await executeQuery(`INSERT INTO canciones (nombre, genero, artista) VALUES ('${nombre}','${genero}','${artista}')`)
+        console.log(response);
+        res.status(201).json({menssage: 'created', id: response.insertId})
+    }catch(error){
+        console.log(error);
+        res.status(500).send(error);
+    }
 }
 
-const actualizarCancion = (req, res) => {
-    res.send('actualizar cancion desde el controlador')
+
+
+const actualizarCancion = async (req, res) => {
+    const {nombre, genero, artista} = req.body;
+    try{
+        const response = await executeQuery(`UPDATE canciones SET nombre ='${nombre}', genero = '${genero}', artista = '${artista}' WHERE idcanciones = ${req.params.id}`);
+        console.log(response);
+        if (response.affectedRows > 0){
+            res.json({message: 'updated'});
+        }else{
+           res.status(404).json({message: `No existe registro con id: ${req.params.id}` }); 
+        }
+    }catch(error){
+        console.log(error);
+        res.status(500).send(error);
+    }
 }
 
-const eliminarCancion = (req, res) => {
-    res.send('eliminar cancion desde el controlador')
+
+
+const eliminarCancion = async (req, res) => {
+    try{
+        const response = await executeQuery(`DELETE FROM canciones WHERE idcanciones = ${req.params.id}`);
+        console.log(response);
+        if (response.affectedRows > 0){
+            res.json({message: 'deleted'});
+        }else{
+           res.status(404).json({message: `No existe registro con id: ${req.params.id}` }); 
+        }
+    }catch(error){
+        console.log(error);
+        res.status(500).send(error);
+    }
+
 }
 
 export {obtenerCanciones, obtenerCancion, agregarCancion, actualizarCancion, eliminarCancion}

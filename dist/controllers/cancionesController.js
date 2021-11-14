@@ -24,6 +24,7 @@ const obtenerCanciones = (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.json(data); //esto se ejecuta cuando se ejecute la promesa asincrono sin await y async
     }
     catch (error) {
+        console.log(error);
         res.status(500).send(error);
     }
     /*executeQuery('SELECT * FROM canciones').then((response) => {
@@ -34,19 +35,65 @@ const obtenerCanciones = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.obtenerCanciones = obtenerCanciones;
 const obtenerCancion = (req, res) => {
-    res.send('obtener cancion desde el controlador');
+    const { id } = req.params;
+    (0, mysql_service_1.default)(`SELECT * FROM canciones WHERE idcanciones = ${id}`).then((response) => {
+        const data = {
+            message: `${response.length} datos encontrados`,
+            datos: response.length > 0 ? response[0] : null
+        };
+        res.json(data);
+    }).catch((error) => {
+        console.log(error);
+        res.status(500).send(error);
+    });
 };
 exports.obtenerCancion = obtenerCancion;
-const agregarCancion = (req, res) => {
-    res.send('agregar cancion desde el controlador');
-};
+const agregarCancion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { nombre, genero, artista } = req.body;
+    try {
+        const response = yield (0, mysql_service_1.default)(`INSERT INTO canciones (nombre, genero, artista) VALUES ('${nombre}','${genero}','${artista}')`);
+        console.log(response);
+        res.status(201).json({ menssage: 'created', id: response.insertId });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
 exports.agregarCancion = agregarCancion;
-const actualizarCancion = (req, res) => {
-    res.send('actualizar cancion desde el controlador');
-};
+const actualizarCancion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { nombre, genero, artista } = req.body;
+    try {
+        const response = yield (0, mysql_service_1.default)(`UPDATE canciones SET nombre ='${nombre}', genero = '${genero}', artista = '${artista}' WHERE idcanciones = ${req.params.id}`);
+        console.log(response);
+        if (response.affectedRows > 0) {
+            res.json({ message: 'updated' });
+        }
+        else {
+            res.status(404).json({ message: `No existe registro con id: ${req.params.id}` });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
 exports.actualizarCancion = actualizarCancion;
-const eliminarCancion = (req, res) => {
-    res.send('eliminar cancion desde el controlador');
-};
+const eliminarCancion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const response = yield (0, mysql_service_1.default)(`DELETE FROM canciones WHERE idcanciones = ${req.params.id}`);
+        console.log(response);
+        if (response.affectedRows > 0) {
+            res.json({ message: 'deleted' });
+        }
+        else {
+            res.status(404).json({ message: `No existe registro con id: ${req.params.id}` });
+        }
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
 exports.eliminarCancion = eliminarCancion;
 //# sourceMappingURL=cancionesController.js.map
