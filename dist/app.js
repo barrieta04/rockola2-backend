@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const canciones_1 = __importDefault(require("./routes/canciones"));
+const config_1 = __importDefault(require("./config/config"));
 const app = (0, express_1.default)();
-const port = 3000;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 (0, canciones_1.default)(app);
@@ -30,7 +30,7 @@ app.get('/prueba', (req, res, next) => __awaiter(void 0, void 0, void 0, functio
             reject('promesa rechazada');
         }
     });
-    yield promesa.then((res) => {
+    const response = yield promesa.then((res) => {
         console.log(res);
     }).catch((error) => {
         console.log(error);
@@ -43,8 +43,8 @@ app.get('/prueba', (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     res.status(200).json({ nombre: "abril" });
     //res.status(401).send('Prueba del servidor');
 })); //este get es una ruta
-app.listen(port, () => {
-    return console.log(`servidor corriendo sobre el puerto ${port}`);
+app.listen(config_1.default.PORT, () => {
+    return console.log(`servidor corriendo sobre el puerto ${config_1.default.PORT}`);
 });
 console.log('pruebo');
 //# sourceMappingURL=app.js.map

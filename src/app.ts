@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { response } from 'express';
 import cancionesRoutes from './routes/canciones';
+import config from './config/config';
 
 const app = express();
-const port = 3000;
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
@@ -20,7 +21,7 @@ app.get('/prueba', async(req, res, next) =>{
         }
     });
 
-    await promesa.then((res) => {
+    const response = await promesa.then((res) => {
         console.log(res);
     }).catch((error) => {
         console.log(error);
@@ -39,8 +40,8 @@ app.get('/prueba', async(req, res, next) =>{
 }); //este get es una ruta
 
 
-app.listen(port, ()=> {
-    return console.log(`servidor corriendo sobre el puerto ${port}`)
+app.listen(config.PORT, ()=> {
+    return console.log(`servidor corriendo sobre el puerto ${config.PORT}`)
 });
 
 console.log('pruebo');

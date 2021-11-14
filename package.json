@@ -20,6 +20,7 @@
   "homepage": "https://github.com/barrieta04/rockola2-backend#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "mysql2": "^2.3.3",
     "save": "^2.4.0",
     "typescript": "^4.4.4"
   },
